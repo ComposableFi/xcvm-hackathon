@@ -31,3 +31,9 @@ Under the `cosmwasm/contracts/xcvm` directory, edit the contract and make sure i
 
 #### Working on the polkadotjs script
 Under the `scripts` directory, edit the polkadotjs script `main.ts` and run `npm run go` to start deploying.
+
+#### Running the EVM
+To run the EVM please run:
+```bash
+npm run abis
+```
