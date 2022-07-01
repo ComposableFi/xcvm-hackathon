@@ -18,22 +18,5 @@ You can see your personal blockchain working by visiting the following link:
 
 ### Running the relayer (only when the node is running)
 ```bash
-cd relayer
-cargo build --release
-./target/release/relayer
-```
-
-### Compiling and deploying the XCVM contract
-Running `./go.sh` will compile the contract and run the deployment script.
-
-#### Working on the XCVM contract
-Under the `cosmwasm/contracts/xcvm` directory, edit the contract and make sure it compile with `cargo wasm`.
-
-#### Working on the polkadotjs script
-Under the `scripts` directory, edit the polkadotjs script `main.ts` and run `npm run go` to start deploying.
-
-#### Running the EVM
-To run the EVM please run:
-```bash
-npm run abis
+./start-relayer.sh
 ```
