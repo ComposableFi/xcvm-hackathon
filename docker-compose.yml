@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  geth:
+    container_name: geth
+    build:
+      context: docker/geth
+      dockerfile: geth.Dockerfile
+    environment:
+      - ETH_PASSWORD=QfdxTYxkwASj
+      - ETH_PRIVATE_KEY=0d0b4c455973c883bb0fa584f0078178aa90c571a8f1d40f28d2339f4e757dde
+      - ETH_ADDRESS=0c56352F05De44C9b5BA8bcF9BDEc7e654993339
+    ports:
+      - 8178:8178
+      - 8546:8546
+    volumes:
+      - ./docker/geth/genesis.json:/app/genesis.json
+    networks:
+      - network_demo
+
+  evm_contracts:
+    container_name: evm_contracts
+    depends_on:
+      - geth
+    build:
+      context: evm_contracts
+      dockerfile: Dockerfile
+    tty: true
+    networks:
+      - network_demo
+
+  postgres:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - 5432:5432
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.8.1.cli-migrations-v3
+    ports:
+      - "8081:8080"
+    depends_on:
+      - "postgres"
+    volumes:
+      - ./relayer/migrations:/hasura-migrations
+      - ./relayer/metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
+      PG_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false" # set to "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      # Might timeout if PG didn't setup the DB yet on the 1st run
+    restart: on-failure
+
+  composable-xcvm:
+    image: corcoder/composable-xcvm-2:1cdb0bb5
+    ports:
+      - 9988:9988
+      - 9944:9944
+
+networks:
+  network_demo:
+    driver: bridge

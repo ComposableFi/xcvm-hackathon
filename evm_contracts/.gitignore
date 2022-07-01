@@ -1,0 +1,11 @@
+.trash
+build
+artifacts
+coverage
+coverage.json
+deployment_output
+node_modules
+typechain
+
+#Hardhat files
+cache

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@polkadot/types": "^8.10.1"
+  }
+}

@@ -1,0 +1,11 @@
+table:
+  schema: public
+  name: network
+array_relationships:
+  - name: transfers
+    using:
+      foreign_key_constraint_on:
+        column: network_id
+        table:
+          schema: public
+          name: transfer

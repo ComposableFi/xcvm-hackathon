@@ -1,0 +1,3 @@
+[submodule "cosmwasm"]
+	path = cosmwasm
+	url = https://github.com/hussein-aitlahcen/cosmwasm
