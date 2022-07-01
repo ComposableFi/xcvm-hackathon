@@ -61,6 +61,18 @@ services:
       # Might timeout if PG didn't setup the DB yet on the 1st run
     restart: on-failure
 
+  relayer:
+    container_name: relayer
+    build:
+      context: .
+      dockerfile: relayer.dockerfile
+    depends_on:
+      - "postgres"
+      - "graphql-engine"
+    tty: true
+    networks:
+      - network_demo
+
   composable-xcvm:
     image: corcoder/composable-xcvm-2:1cdb0bb5
     ports:
