@@ -16,7 +16,7 @@ This takes a few minutes to load. When it has finished you'll see the following 
 You can see your personal blockchain working by visiting the following link:
 [PolkadotJS Blockchain Explorer](https://polkadot.js.org/apps/?rpc=ws%3A%2F%2F127.0.0.1%3A9988#/explorer)
 
-### Running the relayer only when the node is running
+### Running the relayer (only when the node is running)
 ```bash
 cd relayer
 cargo build --release
