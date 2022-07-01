@@ -6,5 +6,6 @@ docker run --rm -v $(pwd):/code \
 cd ..
 cp cosmwasm/artifacts/xcvm.wasm scripts/
 cd scripts
+npm install
 npm run go
 cd ..
