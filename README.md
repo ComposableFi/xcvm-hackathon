@@ -7,7 +7,9 @@ To automatically setup everything you need to get started,
 please open this repository using a GitHub Codespace.
 
 When it has finished loading, please open a terminal and enter the following:
-`docker-compose up`
+```bash
+docker-compose up
+```
 
 This takes a few minutes to load. When it has finished you'll see the following in your terminal:
 
@@ -18,16 +20,11 @@ You can see your personal blockchain working by visiting the following link:
 
 ### Running the relayer (only when the node is running)
 ```bash
-cd relayer
-cargo build --release
-./target/release/relayer
+./start-relayer.sh
 ```
 
 ### Compiling and deploying the XCVM contract
 Running `./go.sh` will compile the contract and run the deployment script.
 
-#### Working on the XCVM contract
-Under the `cosmwasm/contracts/xcvm` directory, edit the contract and make sure it compile with `cargo wasm`.
-
-#### Working on the polkadotjs script
-Under the `scripts` directory, edit the polkadotjs script `main.ts` and run `npm run go` to start deploying.
+## Important note
+It is required to keep up all 3 scripts at all times!
