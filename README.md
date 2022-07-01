@@ -25,3 +25,6 @@ You can see your personal blockchain working by visiting the following link:
 
 ### Compiling and deploying the XCVM contract
 Running `./go.sh` will compile the contract and run the deployment script.
+
+## Important note
+It is required to keep up all 3 scripts at all times!
