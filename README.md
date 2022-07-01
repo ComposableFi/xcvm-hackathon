@@ -28,3 +28,13 @@ Running `./go.sh` will compile the contract and run the deployment script.
 
 ## Important note
 It is required to keep up all 3 scripts at all times!
+
+## Updating the solidity contract(s)
+
+- bring down all 3 scripts
+
+- run:
+
+  ```
+  docker compose down && docker compose up --build
+  ```
