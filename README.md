@@ -7,7 +7,9 @@ To automatically setup everything you need to get started,
 please open this repository using a GitHub Codespace.
 
 When it has finished loading, please open a terminal and enter the following:
-`docker-compose up`
+```bash
+docker-compose up
+```
 
 This takes a few minutes to load. When it has finished you'll see the following in your terminal:
 
