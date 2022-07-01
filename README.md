@@ -9,7 +9,8 @@ please open this repository using a GitHub Codespace.
 When it has finished loading, please open a terminal and enter the following:
 `docker-compose up`
 
-This takes a few minutes to load. When it has finished you'll see
+This takes a few minutes to load. When it has finished you'll see:
+
 `composable-xcvm_1  | 🚀 POLKADOT LAUNCH COMPLETE 🚀` in your terminal.
 
 You can see your personal blockchain working by visiting the following link:
