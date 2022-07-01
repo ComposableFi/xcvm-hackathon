@@ -22,3 +22,6 @@ You can see your personal blockchain working by visiting the following link:
 ```bash
 ./start-relayer.sh
 ```
+
+### Compiling and deploying the XCVM contract
+Running `./go.sh` will compile the contract and run the deployment script.
