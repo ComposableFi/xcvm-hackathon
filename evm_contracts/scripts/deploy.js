@@ -46,7 +46,7 @@ async function main() {
     console.log("Swap address: ", swapperContract);
   */
 
-  console.log("=== Deploying ownable NFT");
+  console.log("=== Deploying OwnableNFT");
 
   const OwnableNFT = await hre.ethers.getContractFactory("OwnableNFT");
   const ownableNFT = await OwnableNFT.deploy("Ownable", "OWN");
@@ -55,6 +55,8 @@ async function main() {
   console.log("=== OwnableNFT Contract deployed at :", ownableNFT.address);
 
   await mintProgram(bridge, ownableNFT, ownableNFT.address, new Uint8Array(32));
+  await burnProgram(bridge, ownableNFT, new Uint8Array(32));
+  await ownerOfOwnableProgram(bridge, ownableNFT, new Uint8Array(32));
 
   // await swapProgram(bridge, swapperContract, 1, 4, 1337000, 1337000);
   // await swapProgram(bridge, swapperContract, 1, 4, 1337000, 1337000);
@@ -114,18 +116,49 @@ async function mintProgram(bridge, ownableNFT, toAddress, ownableId) {
       },
     }]
   });
-  console.log(program);
 
   const tx = await bridge.bridge([0x1337, [0, 1, 2, 3, 4, 5]], [0xC0, 0xDE], [], program);
-  console.log((await tx.wait()).events);
+  await tx.wait();
 }
 
 async function burnProgram(bridge, ownableNFT, ownableId) {
+  console.log("Burn program");
+  const abiCoder = new hre.ethers.utils.AbiCoder();
+  let call = encodedBurn(ownableId);
 
+  let payload = abiCoder.encode(["address", "bytes"], [ownableNFT.address, call]);
+
+  const program = JSON.stringify({
+    tag: [],
+    instructions: [{
+      call: {
+        encoded: hexStringToBytesArray(payload),
+      },
+    }]
+  });
+
+  const tx = await bridge.bridge([0x1337, [0, 1, 2, 3, 4, 5]], [0xC0, 0xDE], [], program);
+  await tx.wait();
 }
 
 async function ownerOfOwnableProgram(bridge, ownableNFT, ownableId) {
+  console.log("OwnerOfOwnable program");
+  const abiCoder = new hre.ethers.utils.AbiCoder();
+  let call = encodedOwnerOfOwnable(ownableId);
 
+  let payload = abiCoder.encode(["address", "bytes"], [ownableNFT.address, call]);
+
+  const program = JSON.stringify({
+    tag: [],
+    instructions: [{
+      call: {
+        encoded: hexStringToBytesArray(payload),
+      },
+    }]
+  });
+
+  const tx = await bridge.bridge([0x1337, [0, 1, 2, 3, 4, 5]], [0xC0, 0xDE], [], program);
+  await tx.wait();
 }
 
 async function swapProgram(bridge, pairAddress, a1i, a2i, a1, a2) {
@@ -265,7 +298,6 @@ function encodedOwnerOfOwnable(ownableId) {
     [ownableId]
   );
 }
-
 
 function encodedSwap(a1i, a2i, a1, a2) {
   return encodeFunctionCall(
