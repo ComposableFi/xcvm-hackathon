@@ -1,3 +1,3 @@
 [submodule "cosmwasm"]
 	path = cosmwasm
-	url = https://github.com/hussein-aitlahcen/cosmwasm
+	url = https://github.com/ltonetwork/xcvm-cosmwasm.git
