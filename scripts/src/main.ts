@@ -140,7 +140,7 @@ const uploadContract = async (api: ApiPromise, account: KeyringPair, code: Buffe
   console.log("Uploading contract... Size: " + code.length);
   const hash = blake2AsHex(Uint8Array.from(code.values()));
   const storage = await api.query.cosmwasm.codeStorage(hash);
-  if(storage.isSome) {
+  if (storage.isSome) {
     console.log("Code already uploaded.");
     return api.createType("CodeHash", hash);
   }
@@ -212,7 +212,7 @@ const executeContract = async <T extends AnyTuple>(
   );
 };
 
-const etphonehome = async (api: ApiPromise, admin: KeyringPair, account: KeyringPair) => {
+const ownableinitmint = async (api: ApiPromise, admin: KeyringPair, account: KeyringPair) => {
 
   await setupInitialState(api, admin, account);
 
@@ -220,19 +220,22 @@ const etphonehome = async (api: ApiPromise, admin: KeyringPair, account: Keyring
 
   const codeHash = await uploadContract(api, account, code);
 
-  // Instantiate the contract without funds and a random salt to avoid collision while testing.
-  const instantiateMsg = {};
-  const contractAddress = await instantiateContract(api, account, {}, randomInt(0xCAFEBABE), codeHash, instantiateMsg);
+  const instantiateMsg = {
+    "max_capacity": 100,
+    "ownable_id": "o-1",
+  };
+  const contractAddress = await instantiateContract(
+    api, account, {}, randomInt(0xCAFEBABE), codeHash, instantiateMsg
+  );
 
   // The message amounts are string as Cosmwasm use string for u128 repr in JSON
   const executeMsg = {
-    et_phone_home: {
-      amount_in: "1000000000000",
-      amount_out: "5000000000000",
+    transfer: {
+      to: account.address,
     }
   };
   const funds = { [COMPOSABLE_ASSET_PICA]: 9000000000000 };
-  const { data: [network]} = await executeContract(
+  const { data: [network] } = await executeContract(
     api,
     account,
     contractAddress,
@@ -246,7 +249,7 @@ const etphonehome = async (api: ApiPromise, admin: KeyringPair, account: Keyring
 const main = async () => {
   const { api, keyring } = await connect();
   const { devWalletAlice } = devWallets(keyring);
-  await etphonehome(
+  await ownableinitmint(
     api,
     devWalletAlice,
     keyring.addFromMnemonic("chunk silent below help stem crew reduce canvas grant desert raven century")
