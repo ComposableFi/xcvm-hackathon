@@ -1,5 +1,14 @@
 # XCVM Hackathon
 
+![ownables](https://user-images.githubusercontent.com/100821/177121121-a1c3dc8c-8108-4c07-9e15-b83ebfdf8f98.png)
+
+Ownables are CosmWasm smart contracts that define ownership. In addition to running on a cosmos blockchain, ownables
+can run directly in a wallet using the [LTO Network](https://ltonetwork.com) private layer.
+
+We're using XCVM to make ownable contracts tradable. An owner can deposit an ownable to the XCVM bridge. The bridge
+will mint an NFT on Ethereum, which can be traded on a platform like OpenSea. The NFT holder can transfer the NFT
+to their XCVM contract, which corresponds to their Cosmos account, and claim the ownable.
+
 ## How to run
 
 ### Starting your personal blockchain

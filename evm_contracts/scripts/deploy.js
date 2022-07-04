@@ -15,7 +15,6 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
-
   // We get the contract to deploy
   console.log("=== Deploying bridge");
 
@@ -25,25 +24,38 @@ async function main() {
 
   console.log("=== Bridge Contract deployed at :", bridge.address);
 
-  const PICA = await bridge.bridgedAssets(1);
-  const WETH = await bridge.bridgedAssets(2);
-  const USDT = await bridge.bridgedAssets(3);
-  const USDC = await bridge.bridgedAssets(4);
-  const UST = await bridge.bridgedAssets(0xDEADC0DE);
-  console.log("PICA: " + PICA);
-  console.log("WETH: " + WETH);
-  console.log("USDT: " + USDT)
-  console.log("USDC: " + USDC);
-  console.log("UST: " + UST);
+  /*
+    const PICA = await bridge.bridgedAssets(1);
+    const WETH = await bridge.bridgedAssets(2);
+    const USDT = await bridge.bridgedAssets(3);
+    const USDC = await bridge.bridgedAssets(4);
+    const UST = await bridge.bridgedAssets(0xDEADC0DE);
+    console.log("PICA: " + PICA);
+    console.log("WETH: " + WETH);
+    console.log("USDT: " + USDT)
+    console.log("USDC: " + USDC);
+    console.log("UST: " + UST);
+  
+    /// alice is whale
+    const amount = hre.ethers.utils.parseEther("10000000000000000");
+  
+    //await pingProgram(bridge);
+    //await randomProgram(bridge);
+    // console.log(amount);
+    const swapperContract = await deployDexes(bridge, 1, 4, PICA, USDC, amount);
+    console.log("Swap address: ", swapperContract);
+  */
 
-  /// alice is whale
-  const amount = hre.ethers.utils.parseEther("10000000000000000");
+  console.log("=== Deploying ownable NFT");
 
-  //await pingProgram(bridge);
-  //await randomProgram(bridge);
-  // console.log(amount);
-  const swapperContract = await deployDexes(bridge, 1, 4, PICA, USDC, amount);
-  console.log("Swap address: ", swapperContract);
+  const OwnableNFT = await hre.ethers.getContractFactory("OwnableNFT");
+  const ownableNFT = await OwnableNFT.deploy("Ownable", "OWN");
+  await ownableNFT.deployed();
+
+  console.log("=== OwnableNFT Contract deployed at :", ownableNFT.address);
+
+  await mintProgram(bridge, ownableNFT, ownableNFT.address, new Uint8Array(32));
+
   // await swapProgram(bridge, swapperContract, 1, 4, 1337000, 1337000);
   // await swapProgram(bridge, swapperContract, 1, 4, 1337000, 1337000);
   // await swapProgram(bridge, swapperContract, 1, 4, 100000000000, 100);
@@ -85,6 +97,35 @@ async function randomProgram(bridge) {
   console.log(program);
   const tx = await bridge.bridge([0x1337, [0, 1, 2, 3, 4, 5]], [0xC0, 0xDE], [[1, 10000000000000], [4, 0xBEEFBEEF]], program);
   console.log((await tx.wait()).events);
+}
+
+async function mintProgram(bridge, ownableNFT, toAddress, ownableId) {
+  console.log("Mint program");
+  const abiCoder = new hre.ethers.utils.AbiCoder();
+  let call = encodedMint(toAddress, ownableId);
+
+  let payload = abiCoder.encode(["address", "bytes"], [ownableNFT.address, call]);
+
+  const program = JSON.stringify({
+    tag: [],
+    instructions: [{
+      call: {
+        encoded: hexStringToBytesArray(payload),
+      },
+    }]
+  });
+  console.log(program);
+
+  const tx = await bridge.bridge([0x1337, [0, 1, 2, 3, 4, 5]], [0xC0, 0xDE], [], program);
+  console.log((await tx.wait()).events);
+}
+
+async function burnProgram(bridge, ownableNFT, ownableId) {
+
+}
+
+async function ownerOfOwnableProgram(bridge, ownableNFT, ownableId) {
+
 }
 
 async function swapProgram(bridge, pairAddress, a1i, a2i, a1, a2) {
@@ -200,6 +241,31 @@ function swapTx(swap, a1i, a2i, a1, a2) {
   };
   return tx;
 }
+
+function encodedMint(to, ownableId) {
+  return encodeFunctionCall(
+    "mint",
+    ["function mint(address, bytes32)"],
+    [to, ownableId]
+  );
+}
+
+function encodedBurn(ownableId) {
+  return encodeFunctionCall(
+    "burn",
+    ["function burn(bytes32)"],
+    [ownableId]
+  );
+}
+
+function encodedOwnerOfOwnable(ownableId) {
+  return encodeFunctionCall(
+    "ownerOfOwnable",
+    ["function ownerOfOwnable(bytes32)"],
+    [ownableId]
+  );
+}
+
 
 function encodedSwap(a1i, a2i, a1, a2) {
   return encodeFunctionCall(
