@@ -11,6 +11,17 @@ to their XCVM contract, which corresponds to their Cosmos account, and claim the
 
 ## How to run
 
+
+### Syncing the cosmwasm submodule
+Ownables XCVM CosmWasm contracts need to be synced from a remote repo. This can be down with:
+```
+git submodule sync --recursive
+```
+Followed by:
+```
+git submodule update --remote
+```
+
 ### Starting your personal blockchain
 To automatically setup everything you need to get started,
 please open this repository using a GitHub Codespace.
