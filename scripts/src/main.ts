@@ -187,6 +187,8 @@ const instantiateContract = async (
     )
   );
   console.log("Contract instantiated at: ", contractAddress.toHuman());
+  console.log("Contract address: ", contractAddress.toHex());
+
   return contractAddress;
 };
 
@@ -199,6 +201,8 @@ const executeContract = async <T extends AnyTuple>(
   eventFilter: (event: IEvent<AnyTuple>) => event is IEvent<T>
 ): Promise<IEvent<T>> => {
   const gas = api.createType("u64", 300000000000);
+  console.log(`executing contract: `);
+  console.log(message);
   return await sendAndWaitForSuccess(
     api,
     account,
@@ -212,7 +216,7 @@ const executeContract = async <T extends AnyTuple>(
   );
 };
 
-const ownableinitmint = async (api: ApiPromise, admin: KeyringPair, account: KeyringPair) => {
+const ownableInitMint = async (api: ApiPromise, admin: KeyringPair, account: KeyringPair) => {
 
   await setupInitialState(api, admin, account);
 
@@ -230,8 +234,8 @@ const ownableinitmint = async (api: ApiPromise, admin: KeyringPair, account: Key
 
   // The message amounts are string as Cosmwasm use string for u128 repr in JSON
   const executeMsg = {
-    transfer: {
-      to: account.address,
+    mint: {
+      owner: admin.address,
     }
   };
   const funds = { [COMPOSABLE_ASSET_PICA]: 9000000000000 };
@@ -249,7 +253,7 @@ const ownableinitmint = async (api: ApiPromise, admin: KeyringPair, account: Key
 const main = async () => {
   const { api, keyring } = await connect();
   const { devWalletAlice } = devWallets(keyring);
-  await ownableinitmint(
+  await ownableInitMint(
     api,
     devWalletAlice,
     keyring.addFromMnemonic("chunk silent below help stem crew reduce canvas grant desert raven century")
