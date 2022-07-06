@@ -235,7 +235,7 @@ const ownableInitMint = async (api: ApiPromise, admin: KeyringPair, account: Key
   // The message amounts are string as Cosmwasm use string for u128 repr in JSON
   const executeMsg = {
     mint: {
-      owner: admin.address,
+      owner: "0x3DC5637950105979bB0FC53b7ac2C9d4DDE3D011",
     }
   };
   const funds = { [COMPOSABLE_ASSET_PICA]: 9000000000000 };

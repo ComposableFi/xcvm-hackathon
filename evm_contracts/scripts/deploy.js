@@ -53,7 +53,7 @@ async function main() {
   await ownableNFT.deployed();
 
   console.log("=== OwnableNFT Contract deployed at :", ownableNFT.address);
-
+  console.log("random wallet address: ", ethers.Wallet.createRandom().address);
   await mintProgram(bridge, ownableNFT, ownableNFT.address, new Uint8Array(32));
   await burnProgram(bridge, ownableNFT, new Uint8Array(32));
   await ownerOfOwnableProgram(bridge, ownableNFT, new Uint8Array(32));
